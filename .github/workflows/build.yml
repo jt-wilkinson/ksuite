@@ -1,0 +1,82 @@
+name: Build KSuite
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+
+  build-mac:
+
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build Mac App
+        run: |
+          pyinstaller \
+          --windowed \
+          --name KSuite \
+          --add-data "data:data" \
+          main.py
+
+      - name: Zip Mac Build
+        run: |
+          cd dist
+          zip -r KSuite-mac.zip KSuite.app
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KSuite-mac
+          path: dist/KSuite-mac.zip
+
+
+  build-windows:
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build Windows EXE
+        run: |
+          pyinstaller ^
+          --windowed ^
+          --name KSuite ^
+          --add-data "data;data" ^
+          main.py
+
+      - name: Zip Windows Build
+        run: |
+          powershell Compress-Archive dist/KSuite dist/KSuite-windows.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KSuite-windows
+          path: dist/KSuite-windows.zip
