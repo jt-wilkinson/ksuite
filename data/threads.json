@@ -1,0 +1,17 @@
+{
+    "barcodes": {
+        "0073650133763": "coats & clark_0002"
+    },
+    "threads": {
+        "coats & clark_0002": {
+            "brand": "Coats & Clark",
+            "code": "0002",
+            "name": "210",
+            "rgb": [
+                0,
+                0,
+                0
+            ]
+        }
+    }
+}
